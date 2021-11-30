@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Flex, Box, Text, Button } from '@chakra-ui/react'
 import styles from '../styles/Home.module.css';
 import { baseUrl, fetchApi } from './../utils/fetchApi'
-
+import Property from '../components/Property';
 const Banner = ({ purpose, title1, title2, imageUrl, linkName, buttonText, desc1, desc2 }) => {
   return (
 
@@ -29,8 +29,10 @@ const Banner = ({ purpose, title1, title2, imageUrl, linkName, buttonText, desc1
   )
 }
 
-export default function Home({propertyForSale , propertyForRent}) {
+export default function Home({ propertyForSale, propertyForRent }) {
   console.log("propertyForSale : " , propertyForSale);
+  console.log("propertyForRent : " , propertyForRent);
+
   return (
     <Box>
       <Banner purpose="RENT A HOME"
@@ -43,7 +45,9 @@ export default function Home({propertyForSale , propertyForRent}) {
         imageUrl="https://www.jquery-az.com/html/images/banana.jpg"
       />
       <Flex flexWrap="wrap" >
-        {/* { get from api} */}
+        {propertyForRent.map((property) => {
+         return <Property key={property.id} propertyInfo = {property} />
+        })}
       </Flex>
       <Banner purpose='BUY A HOME'
         title1="Find  , Buy & Own Your"
@@ -55,9 +59,10 @@ export default function Home({propertyForSale , propertyForRent}) {
         imageUrl="https://www.jquery-az.com/html/images/banana.jpg"
 
       />
-
       <Flex flexWrap="wrap" >
-        {/* { get from api} */}
+        {propertyForSale.map((property) => {
+          return <Property key={property.id} propertyInfo = {property}/>
+        })}
       </Flex>
 
 
@@ -70,9 +75,9 @@ export async function getStaticProps() {
   const propertyForRent = await fetchApi(`${baseUrl}/properties/list?locationExternalIDs=5002&purpose=for-rent&hitsPerPage=6`);
 
   return {
-    props : {
-      propertyForSale : propertyForSale?.hits,
-      propertyForRent : propertyForRent?.hits,
+    props: {
+      propertyForSale: propertyForSale?.hits,
+      propertyForRent: propertyForRent?.hits,
     }
   }
 
